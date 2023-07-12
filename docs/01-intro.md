@@ -15,4 +15,6 @@ As for offline functionality, the SDK currently allows partners to download song
 
 Please be aware that the SDK does not provide metadata of tracks. Partners should request this information from Pipe to display any track information such as cover, title, artist name, etc.
 
-To get started with the SDK, create a new application on the Deezer Developers platform, and request access on JFrog where the SDK is stored. Happy coding!
+To get started with the SDK, create a new application on the Deezer Developers platform, and request access on JFrog where the SDK is stored.
+
+Happy coding!
