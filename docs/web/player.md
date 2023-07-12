@@ -1,0 +1,555 @@
+# SDK Web Player API
+
+## Setup & rules to follow
+
+- You must use a single instance of the SDK Player across your app
+- We recommend that you create your instance at the top of the app and expose the instance to the rest of the app
+- The SDK instance must be created only after the user has logged in and has valid tokens
+
+> Note: For instance, we made a React context provider to create the SDKPlayer instance and expose it to our components
+
+```ts
+type SDKPlayerOptions = {
+  /**
+   * Enables gapless playback and streaming optimizations.
+   * This setting is recommended for STBs.
+   */
+  isLowPerformance?: boolean;
+
+  /**
+   * The number of seconds allowed in the buffer.
+   * Please note the real number of seconds can exceed this number, depending on the size of chunk wrote in the sink.
+   * The default value is 30 seconds. The minimum allowed value is 5 seconds which is recommended for low performance devices.
+   */
+  sinkLimit?: number;
+
+  /**
+   * Enables Time To Play performance measurement.
+   * This will save in local storage a `measures` object with time to load, time to play (on togglePlay and next) and progress when first progress event is triggered.
+   */
+  measurePerformance?: boolean;
+
+  /**
+   * Fill your app name, app version, app id and device name. They will be transmitted in
+   * Deezer log db when a track is read
+   */
+  app: {
+    name: string,
+    version: string,
+    id: string;
+    device?: {
+      name: string;
+    };
+  };
+
+  /**
+   * Set initial track encoding quality. If not provided, encoding is set to Encoding_MP3_128 by default.
+   */
+  encoding?: Encoding_MP3_128 | Encoding_MP3_320 | Encoding_FLAC;
+
+  /**
+   * When user clicks on "play" on the player controls, if the queue is empty,
+   * the initialContext you provided here will be loaded
+   */
+  initialContext: SDKPlaybackContext;
+
+  /**
+   * To protect your ears, try to put 0.02 for initialVolume first, because default is quite loud!
+   */
+  initialVolume?: number;
+
+   /**
+   *  a string representing the language version as defined in RFC 5646 (https://datatracker.ietf.org/doc/html/rfc5646).
+   * Examples of valid language codes include "en", "en-US", "fr", "fr-FR", "es-ES", etc.
+   */
+  locale: string;
+
+  /**
+   * You can provide queries callbacks that the SDK will call when it needs data.
+   * However that will override internal queries and you won't be able to use integrated playing methods like `playAlbum`.
+   * Instead you should use `togglePlay` in order to play content.
+   *
+   * For instance:
+   * - when togglePlay({ contextType: ContextType.PLAYLIST, contextId: '1234' }) is called
+   * - then queryCollection callback is called with this context, and expects you return SDKMediaRequest[]
+   */
+  queries?: SDKQueries;
+
+  /**
+   * SDK has a built-in GraphQL client and queries to play content easily with integrated methods like `playAlbum`.
+   * It needs a method to fetch the jwt token. This is given by the Auth instance you created with `@deezer/sdk-auth` package.
+   *
+   */
+   getToken?: () => Promise<string>;
+
+  /**
+   * SDK has a built-in GraphQL client and queries to play content easily with integrated methods like `playAlbum`.
+   * It needs a method to invalidate the current jwt token. This is given by the Auth instance you created with `@deezer/sdk-auth` package.
+   *
+   */
+   invalidateCurrentToken?: () => void;
+
+  userProvider: () => Promise<{
+    id: string;
+
+    /**
+     * RECToken is unique to the logged user, and is
+     * available on `PrivateUser { RECToken { expirationDate token } }` in the graphql schema
+     */
+    authToken: RECToken;
+    /**
+     *
+     * MediaServiceLicenseToken is unique to the logged user, and is
+     * available on `PrivateUser { MediaServiceLicenseToken { expirationDate token } }` in the graphql schema
+     */
+    licenseToken: MediaServiceLicenseToken;
+  }>,
+
+};
+
+type SDKQueries = {
+  queryCollection: QueryCollection;
+};
+
+type QueryCollection = (
+  playbackContext: SDKPlaybackContext,
+) => Promise<SDKMediaRequest[]>
+
+const sdk = new SDKPlayer(options: SDKPlayerOptions);
+```
+
+For the GraphQL data needed to run the SDK, please refer to [this doc](./Graphql.md)
+
+## Events
+
+In order to get information about the state of the player, the queue or the progress, you will need to use events.
+
+It will guarantee you always have the fresh information, as well as let you the choice to listen to what you need, only when you need it.
+
+### Subscribing and unsubscribing to events
+
+```ts
+import SDKPlayer, {SDKPlayerEvent} from '@deezer/sdk-player';
+const sdk = new SDKPlayer({...});
+const unsubscribe = sdk.subscribe(SDKPlayerEvent, callback); // subscribe to event
+
+unsubscribe(); // when you want to cleanup the event listener
+```
+
+### SDKPlayerEvent.PLAYBACK_STATE_CHANGED
+
+```ts
+enum SDKPlayerState {
+  PAUSED = 'PAUSED',
+  /**
+   * Is trying to play, but still processing or fetching data
+   */
+  LOADING = 'LOADING',
+  /**
+   * The player is actually playing sound
+   */
+  PLAYING = 'PLAYING',
+}
+enum RepeatMode {
+  /**
+   * Repeat the queue
+   */
+  REPEAT_MODE_ALL = 'REPEAT_MODE_ALL',
+
+  /**
+   * Repeat the current track indefinitely
+   */
+  REPEAT_MODE_ONE = 'REPEAT_MODE_ONE',
+  REPEAT_MODE_NONE = 'REPEAT_MODE_NONE',
+}
+type SDKPlaybackState = {
+  state: SDKPlayerState;
+ shuffled: boolean;
+ canShuffle: boolean;
+ repeat: RepeatMode;
+ currentTrackIndex: number;
+ currentTrack: SDKMediaRequest | null;
+ canEditQueue: boolean;
+ canPrevious: boolean;
+};
+
+sdk.subscribe(SDKPlayerEvent.PLAYBACK_STATE_CHANGED, (state: SDKPlaybackState) => void);
+```
+
+### SDKPlayerEvent.QUEUE_UPDATED
+
+When a new queue is set or the current queue is updated (for example after a track loads or when adding/removing a track from the queue), you can retrieve the new queue and update your UI.
+
+```ts
+sdk.subscribe(SDKPlayerEvent.QUEUE_UPDATED, (queue: Playable[]) => void);
+```
+
+### SDKPlayerEvent.PROGRESS_CHANGED
+
+When playing the progress change, you can subscribe to this event to update your UI (for example progress bar, timer)
+
+```ts
+type SDKPlaybackProgress = {
+  positionPercent: number;
+  position: number;
+  duration: number;
+};
+
+sdk.subscribe(SDKPlayerEvent.PROGRESS_CHANGED, (progress: SDKPlaybackProgress) => void);
+```
+
+### SDKPlayerEvent.PLAYER_ERROR
+
+When an error occurs you can retrieve the error with it's type, subtype, message and cause.
+
+```ts
+type SDKPlayerFailure {
+ type: {
+   name: string
+ };
+ subtype: {
+   name: string
+ }
+ message: string;
+ cause: Nullable<Error>;
+}
+
+sdk.subscribe(SDKPlayerEvent.PLAYER_ERROR, (error: SDKPlayerFailure) => void);
+```
+
+### SDKPlayerEvent.SINGLE_INSTANCE_PLAYBACK_MESSAGE_RECEIVED
+
+Single Instance Playback (SIP) is the mechanism that prevent streaming from multiple device at the time with one account.
+If you start the playback on device A and then start the playback on device B, then the playback will stop on device A and you will receive the `SDKPlayerEvent.SINGLE_INSTANCE_PLAYBACK_MESSAGE_RECEIVED` event. The playback will continue on device B. You can display a message to the user on device A explaining why the playback stopped.
+
+```ts
+sdk.subscribe(
+  SDKPlayerEvent.SINGLE_INSTANCE_PLAYBACK_MESSAGE_RECEIVED,
+  () => void,
+);
+```
+
+### SDKPlayerEvent.MEDIA_STARTED
+
+When a new media starts playing, you can subscribe to this event to update your UI. This event is triggered when the media starts playing, not when it is loaded.
+
+```ts
+sdk.subscribe(SDKPlayerEvent.MEDIA_STARTED, (playable: Playable) => void);
+```
+
+## Contexts
+
+Possible contexts are exported as `SDKPossibleContextType` and you can use the `ContextType` enum:
+
+```ts
+export enum ContextType {
+	FLOW = 'flow_partner',
+	SMART_TRACK_LIST = 'smarttracklist_partner',
+	ALBUM = 'album_partner',
+	PLAYLIST = 'playlist_partner',
+	TRACK = 'track_partner',
+	TALK = 'talk_partner',
+	RADIO = 'radio_partner',
+	LIVESTREAM = 'livestream_partner',
+	ARTIST = 'artist_partner',
+	FAVORITE_TRACKS = 'favorite_tracks_partner',
+	AUDIOBOOK = 'audiobook_partner',
+}
+
+export type SDKPossibleContextType =
+	| 'flow_partner'
+	| 'smarttracklist_partner'
+	| 'album_partner'
+	| 'playlist_partner'
+	| 'track_partner'
+	| 'talk_partner'
+	| 'radio_partner'
+	| 'livestream_partner'
+	| 'artist_partner'
+	| 'favorite_tracks_partner'
+	| 'audiobook_partner'
+	| 'queue';
+```
+
+## Self managed queries vs integrated queries
+
+You have the option of either handling queries on your own and passing them to the player through the `queries` property or utilizing integrated queries. It is not possible to use both mechanisms simultaneously.
+
+The SDK provides a built-in GraphQL client and integrated methods, such as `playAlbum`, to easily play content. In order to use these integrated methods, you need to have a method for fetching the jwt token, `getToken`, and another for invalidating it `invalidateCurrentToken`. This can be accomplished by utilizing the Auth instance that you created using the `@deezer/sdk-auth` package.
+
+## Methods
+
+### togglePlay
+
+When the user interacts with the play/pause button on a track, you must call `sdk.togglePlay`.
+
+This method is powerful, because it will make your integration easy by handling such scenarios for free:
+
+- User is not playing anything, queue is empty
+- User clicks on a track in a playlist --> queue becomes this playlist, and starts to play at the selected track
+- User goes on an album and ask for a track --> current queue is reset, new queue is created and becomes this album + starts at selected track
+
+This kind of behavior is hard to manage with good consistency across an app, but since the SDK knows what is being played and from which context, it will behave exactly as you would expect.
+
+```ts
+type SDKPossibleContextType =
+	| 'flow_partner'
+	| 'smarttracklist_partner'
+	| 'album_partner'
+	| 'playlist_partner'
+	| 'track_partner'
+	| 'talk_partner'
+	| 'radio_partner'
+	| 'livestream_partner'
+	| 'queue';
+
+type SDKPlaybackContext = {
+	contextType: SDKPossibleContextType;
+	/**
+	 * contextId is "playlistId" or "albumId"
+	 * Can be undefined if context is "queue", since there's no queue id
+	 */
+	contextId?: string;
+	trackIndex?: number;
+	/**
+	 * Default is basic
+	 *
+	 * An infinite queue is a queue with no end, like a "Deezer Flow"
+	 * When user reaches the end of the queue, the SDK will ask for new tracks
+	 * through the queryCollection and append the result to the end of the queue.
+	 *
+	 * Some limitations with infinite queues: you can't edit them (append a track
+	 * to the end of the queue), shuffle is not available and repeat is "single track"
+	 * only.
+	 *
+	 * A basic queue is a finite queue, it is fully filled after a toggle play and
+	 * after the user adds a new track to the end of the queue.
+	 */
+	queueType?: 'infinite' | 'basic';
+	/**
+	 * Shuffle option. When set to true, the context tracklist is directly shuffled and added to the queue.
+	 * If a trackIndex is not specified, a random trackIndex from the context is played which is the first trackIndex of the queue.
+	 */
+	shuffle?: boolean;
+};
+
+/**
+ * Note: playbackContext is optional: don't specify it for player control, but specify it when
+ * playing a specific track from a context (ex: play "this track in this playlist", you must specify the context)
+ */
+sdk.togglePlay(async (playbackContext?: SDKPlaybackContext) => Promise<void>);
+```
+
+### playAlbum
+
+Plays an album from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playAlbum(albumId: string, trackIndex?: number): void;
+```
+
+### playAlbum
+
+Plays an album from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playAlbum(albumId: string, trackIndex?: number): void;
+```
+
+### playPlaylist
+
+Plays a playlist from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playPlaylist(playlistId: string, trackIndex?: number): void;
+```
+
+### playArtistTopTracks
+
+Plays the top tracks of an artist from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playArtistTopTracks(artistId: string, trackIndex?: number): void;
+```
+
+### playFlow
+
+Plays the current user's Flow.
+
+```ts
+sdk.playFlow(): void;
+```
+
+### playAudiobook
+
+Plays an audiobook from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playAudiobook(audiobookId: string, trackIndex?: number): void;
+```
+
+### playSmartTracklist
+
+Plays a smart tracklist from a specific track index, by default it will start playing from the first track.
+
+```ts
+sdk.playSmartTracklist(smartTracklistId: string, trackIndex?: number): void;
+```
+
+### playFlowMood
+
+Plays a specific Flow Mood (e.g. "chill"). Use user's id to play the regular flow.
+
+```ts
+sdk.playFlowMood(id: string): void;
+```
+
+### next
+
+Will go to the next track in the queue
+
+```ts
+sdk.next();
+```
+
+### previous
+
+If current track current position is <5s, will go to the previous track in the queue
+Otherwise, it will put the current track position to 0s
+
+```ts
+sdk.previous();
+```
+
+### seek
+
+Allows navigation to a given position in a track
+
+```ts
+// Specify a new position in seconds
+sdk.seek(newPosition: number);
+
+// Or use the current position to define the new position
+sdk.seek((currentPosition) => currentPosition + 5);
+```
+
+### getVolume
+
+Get the volume level, from 0 to 1
+
+```ts
+sdk.getVolume();
+```
+
+### setVolume
+
+Modify the volume level, from 0 to 1
+
+```ts
+sdk.setVolume(volume: number);
+```
+
+### getPlaybackSpeed
+
+Get the playback speed, from 0.25 to 5
+
+```ts
+sdk.getPlaybackSpeed();
+```
+
+### setPlaybackSpeed
+
+Modify the playback speed, from 0.25 to 5.
+
+**Important note** : you should not use this on `SONG` typed media. This paramater is only use to change playback speed in podcast or audio book context
+
+```ts
+sdk.setPlaybackSpeed(value: number);
+```
+
+### isCurrentTrack
+
+Helps to identify if a given track in a given context is the current one in the queue
+
+```ts
+sdk.isCurrentTrack({
+	track: MediaRequest,
+	contextType: SDKPossibleContextType,
+	contextId: string,
+});
+```
+
+### queue.add
+
+Will add medias at the end of the queue
+
+```ts
+sdk.queue.add(tracks: Playable[]);
+```
+
+### queue.addAtPosition
+
+Will add medias at the chosen position of the queue
+
+```ts
+sdk.queue.addAtPosition(queueableList: Playable[], atPosition: number);
+```
+
+### queue.jumpToTrack
+
+Jump to a specific track in the current playlist and starts playing it at a specific time. Will do a seek if the trackIndex is the same as the currentIndex.
+
+```ts
+sdk.queue.jumpToTrack(trackIndex: number, startTime = 0);
+```
+
+### queue.removeAt
+
+Remove a queue item at a given position
+
+> trackIndex is the position of the track in the queue
+
+```ts
+sdk.queue.removeAt(trackIndex: number);
+```
+
+### queue.toggleShuffle
+
+If shuffle is off, turns it on
+If shuffle is on, turns it off
+
+```ts
+sdk.queue.toggleShuffle();
+```
+
+### queue.toggleRepeat
+
+Will toggle the repeat following this cycle:
+
+- Repeat NONE --> ALL
+- Repeat ALL --> ONE
+- Repeat ONE --> NONE
+
+```ts
+sdk.queue.toggleRepeat();
+```
+
+### queue.setShuffle
+
+Set yourself the shuffle value
+
+```ts
+sdk.queue.setShuffle(isShuffled: boolean);
+```
+
+### queue.setRepeat
+
+Set yourself the repeat value
+
+```ts
+const RepeatMode_REPEAT_MODE_NONE: RepeatMode;
+const RepeatMode_REPEAT_MODE_ONE: RepeatMode;
+const RepeatMode_REPEAT_MODE_ALL: RepeatMode;
+
+sdk.queue.setRepeat(repeatMode: RepeatMode);
+```

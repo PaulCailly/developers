@@ -1,0 +1,23 @@
+# Private registry setup
+
+You need to use npm to fetch the two necessary packages `@deezer/sdk-auth` and `@deezer/sdk-player`
+
+To configure you machine to download '@deezer' packages from the right registry, run the following command
+
+## Setup custom registry
+
+`npm config set @deezer:registry https://deezerpps.jfrog.io/artifactory/api/npm/web-sdk/`
+
+## Login to the registry
+
+Then, use your JFrog credentials to login to the repository by running (you’ll be asked to provide the credentials detailed below):
+
+`npm login --scope=@deezer --registry=https://deezerpps.jfrog.io/artifactory/api/npm/web-sdk/`
+
+> JFrog credentials are provided to you by Deezer, check on the RC documentation on Confluence to find them
+
+## Try to install deezer packages
+
+You should now be able to install the deezer SDK packages in your application by running:
+
+`npm i @deezer/sdk-auth @deezer/sdk-player`
