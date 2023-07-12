@@ -118,7 +118,7 @@ type QueryCollection = (
 const sdk = new SDKPlayer(options: SDKPlayerOptions);
 ```
 
-For the GraphQL data needed to run the SDK, please refer to [this doc](./graphql.md)
+For the GraphQL data needed to run the SDK, please refer to [this doc](./02-graphql.md)
 
 ## Events
 

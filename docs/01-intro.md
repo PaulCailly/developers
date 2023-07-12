@@ -1,4 +1,4 @@
-# Welcome to the Deezer SDK Documentation
+# Introduction
 
 Deezer's Software Development Kit (SDK) is a comprehensive set of tools designed to help you create a media app integrated with the vast Deezer Music catalogue. Available on iOS, Android, and Web platforms, our SDK offers you a simplified way to authenticate users, play music from our extensive library, and handle offline content.
 

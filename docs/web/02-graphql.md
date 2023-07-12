@@ -7,6 +7,6 @@ To call the Pipe GraphQL we use :
 - [ Apollo react client ](https://www.apollographql.com/docs/react/)
 - [ GraphQL Codegen ](https://www.graphql-code-generator.com/docs/getting-started/index)
 
-We configure the Apollo client to call `getToken` on the [auth module](./authentication.md) instance on each request and set the proper header to specify the needed JWT.
+We configure the Apollo client to call `getToken` on the [auth module](./01-authentication.md) instance on each request and set the proper header to specify the needed JWT.
 
 For Typescript code generation we use [ GraphQL Codegen ](https://www.graphql-code-generator.com/docs/getting-started/index) to allow the app to have definitely typed returns for each GraphQL operation.
