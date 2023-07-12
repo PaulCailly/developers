@@ -118,7 +118,7 @@ type QueryCollection = (
 const sdk = new SDKPlayer(options: SDKPlayerOptions);
 ```
 
-For the GraphQL data needed to run the SDK, please refer to [this doc](./Graphql.md)
+For the GraphQL data needed to run the SDK, please refer to [this doc](./graphql.md)
 
 ## Events
 
@@ -243,32 +243,32 @@ Possible contexts are exported as `SDKPossibleContextType` and you can use the `
 
 ```ts
 export enum ContextType {
-	FLOW = 'flow_partner',
-	SMART_TRACK_LIST = 'smarttracklist_partner',
-	ALBUM = 'album_partner',
-	PLAYLIST = 'playlist_partner',
-	TRACK = 'track_partner',
-	TALK = 'talk_partner',
-	RADIO = 'radio_partner',
-	LIVESTREAM = 'livestream_partner',
-	ARTIST = 'artist_partner',
-	FAVORITE_TRACKS = 'favorite_tracks_partner',
-	AUDIOBOOK = 'audiobook_partner',
+  FLOW = "flow_partner",
+  SMART_TRACK_LIST = "smarttracklist_partner",
+  ALBUM = "album_partner",
+  PLAYLIST = "playlist_partner",
+  TRACK = "track_partner",
+  TALK = "talk_partner",
+  RADIO = "radio_partner",
+  LIVESTREAM = "livestream_partner",
+  ARTIST = "artist_partner",
+  FAVORITE_TRACKS = "favorite_tracks_partner",
+  AUDIOBOOK = "audiobook_partner",
 }
 
 export type SDKPossibleContextType =
-	| 'flow_partner'
-	| 'smarttracklist_partner'
-	| 'album_partner'
-	| 'playlist_partner'
-	| 'track_partner'
-	| 'talk_partner'
-	| 'radio_partner'
-	| 'livestream_partner'
-	| 'artist_partner'
-	| 'favorite_tracks_partner'
-	| 'audiobook_partner'
-	| 'queue';
+  | "flow_partner"
+  | "smarttracklist_partner"
+  | "album_partner"
+  | "playlist_partner"
+  | "track_partner"
+  | "talk_partner"
+  | "radio_partner"
+  | "livestream_partner"
+  | "artist_partner"
+  | "favorite_tracks_partner"
+  | "audiobook_partner"
+  | "queue";
 ```
 
 ## Self managed queries vs integrated queries
@@ -293,44 +293,44 @@ This kind of behavior is hard to manage with good consistency across an app, but
 
 ```ts
 type SDKPossibleContextType =
-	| 'flow_partner'
-	| 'smarttracklist_partner'
-	| 'album_partner'
-	| 'playlist_partner'
-	| 'track_partner'
-	| 'talk_partner'
-	| 'radio_partner'
-	| 'livestream_partner'
-	| 'queue';
+  | "flow_partner"
+  | "smarttracklist_partner"
+  | "album_partner"
+  | "playlist_partner"
+  | "track_partner"
+  | "talk_partner"
+  | "radio_partner"
+  | "livestream_partner"
+  | "queue";
 
 type SDKPlaybackContext = {
-	contextType: SDKPossibleContextType;
-	/**
-	 * contextId is "playlistId" or "albumId"
-	 * Can be undefined if context is "queue", since there's no queue id
-	 */
-	contextId?: string;
-	trackIndex?: number;
-	/**
-	 * Default is basic
-	 *
-	 * An infinite queue is a queue with no end, like a "Deezer Flow"
-	 * When user reaches the end of the queue, the SDK will ask for new tracks
-	 * through the queryCollection and append the result to the end of the queue.
-	 *
-	 * Some limitations with infinite queues: you can't edit them (append a track
-	 * to the end of the queue), shuffle is not available and repeat is "single track"
-	 * only.
-	 *
-	 * A basic queue is a finite queue, it is fully filled after a toggle play and
-	 * after the user adds a new track to the end of the queue.
-	 */
-	queueType?: 'infinite' | 'basic';
-	/**
-	 * Shuffle option. When set to true, the context tracklist is directly shuffled and added to the queue.
-	 * If a trackIndex is not specified, a random trackIndex from the context is played which is the first trackIndex of the queue.
-	 */
-	shuffle?: boolean;
+  contextType: SDKPossibleContextType;
+  /**
+   * contextId is "playlistId" or "albumId"
+   * Can be undefined if context is "queue", since there's no queue id
+   */
+  contextId?: string;
+  trackIndex?: number;
+  /**
+   * Default is basic
+   *
+   * An infinite queue is a queue with no end, like a "Deezer Flow"
+   * When user reaches the end of the queue, the SDK will ask for new tracks
+   * through the queryCollection and append the result to the end of the queue.
+   *
+   * Some limitations with infinite queues: you can't edit them (append a track
+   * to the end of the queue), shuffle is not available and repeat is "single track"
+   * only.
+   *
+   * A basic queue is a finite queue, it is fully filled after a toggle play and
+   * after the user adds a new track to the end of the queue.
+   */
+  queueType?: "infinite" | "basic";
+  /**
+   * Shuffle option. When set to true, the context tracklist is directly shuffled and added to the queue.
+   * If a trackIndex is not specified, a random trackIndex from the context is played which is the first trackIndex of the queue.
+   */
+  shuffle?: boolean;
 };
 
 /**
@@ -473,9 +473,9 @@ Helps to identify if a given track in a given context is the current one in the 
 
 ```ts
 sdk.isCurrentTrack({
-	track: MediaRequest,
-	contextType: SDKPossibleContextType,
-	contextId: string,
+  track: MediaRequest,
+  contextType: SDKPossibleContextType,
+  contextId: string,
 });
 ```
 
