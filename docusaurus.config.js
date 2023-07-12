@@ -90,35 +90,22 @@ const config = {
                 label: "Tutorial",
                 to: "/docs/intro",
               },
-            ],
-          },
-          {
-            title: "Community",
-            items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
-                label: "Twitter",
-                href: "https://twitter.com/docusaurus",
+                label: "Preview",
+                href: "https://dev-sample-player.deez.re/",
               },
             ],
           },
           {
-            title: "More",
+            title: "Resources",
             items: [
               {
-                label: "Blog",
-                to: "/blog",
+                label: "Preview GitHub",
+                href: "https://github.com/deezer/sdk-sample-app-web",
               },
               {
-                label: "GitHub",
-                href: "https://github.com/facebook/docusaurus",
+                label: "Release Notes",
+                href: "https://deezer.jira.com/wiki/spaces/RTLDZR/pages/2842755107/Release+Candidate+deliveries+RCs",
               },
             ],
           },
