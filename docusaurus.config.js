@@ -7,7 +7,7 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "SDK Documentation",
-  tagline: "",
+  tagline: "Learn how to use Deezer SDK to develop your own music app",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
