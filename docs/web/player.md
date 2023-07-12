@@ -1,4 +1,4 @@
-# SDK Web Player API
+# Player
 
 ## Setup & rules to follow
 

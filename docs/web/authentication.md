@@ -1,4 +1,4 @@
-# SDK Web Auth API
+# Authentication
 
 ## Setup & rules to follow
 

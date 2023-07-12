@@ -1,4 +1,4 @@
-# SDK Web API
+# GraphQL API
 
 ## Setup & rules to follow
 
