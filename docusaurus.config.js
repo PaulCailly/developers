@@ -117,6 +117,11 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+  plugins: [
+    // Support for search.
+    // Does not work in dev mode (to preview in dev mode, run "npm run build" then "npm run serve")
+    [require.resolve("@cmfcmf/docusaurus-search-local"), {}],
+  ],
 };
 
 module.exports = config;
