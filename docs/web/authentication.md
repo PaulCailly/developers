@@ -39,7 +39,7 @@ Once you have instantiated an Auth class, you can use the following methods:
 | ---------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | getToken               | <code>() => Promise\<string \| null></code> | Returns a JWT fresh from auth service or from cache if still valid.<br/>Returns `null` if `tokenOutputType` is `COOKIE` |
 | invalidateCurrentToken | <code>() => void</code>                     | Forces the invalidation of tokens cached into the Auth class                                                            |
-| logout                 | <code>() => Promise\<void></code>           | Invalidates JWT and refresh token set in cache or cookie                                                                |
+| logout                 | <code>() => Promise\<void/></code>          | Invalidates JWT and refresh token set in cache or cookie                                                                |
 
 ## Login as Partner
 

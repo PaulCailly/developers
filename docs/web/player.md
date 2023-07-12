@@ -337,7 +337,7 @@ type SDKPlaybackContext = {
  * Note: playbackContext is optional: don't specify it for player control, but specify it when
  * playing a specific track from a context (ex: play "this track in this playlist", you must specify the context)
  */
-sdk.togglePlay(async (playbackContext?: SDKPlaybackContext) => Promise<void>);
+sdk.togglePlay(async (playbackContext?: SDKPlaybackContext) => Promise<void/>);
 ```
 
 ### playAlbum
