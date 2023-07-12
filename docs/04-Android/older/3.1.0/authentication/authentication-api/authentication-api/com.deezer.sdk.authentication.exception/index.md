@@ -1,0 +1,10 @@
+//[authentication-api](../../index.md)/[com.deezer.sdk.authentication.exception](index.md)
+
+# Package com.deezer.sdk.authentication.exception
+
+## Types
+
+| Name                                                                                      | Summary                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [DeezerAuthenticationExpiredException](-deezer-authentication-expired-exception/index.md) | [androidJvm]<br/>class [DeezerAuthenticationExpiredException](-deezer-authentication-expired-exception/index.md) : [Exception](https://developer.android.com/reference/kotlin/java/lang/Exception.html)<br/>Exception thrown when the authentication has expired, and has to be renewed to continue to use authenticated features of the **_Deezer SDK_**                       |
+| [DeezerAuthenticationFailedException](-deezer-authentication-failed-exception/index.md)   | [androidJvm]<br/>class [DeezerAuthenticationFailedException](-deezer-authentication-failed-exception/index.md)(val cause: [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)?) : [RuntimeException](https://developer.android.com/reference/kotlin/java/lang/RuntimeException.html)<br/>Exception thrown when the authentication has failed |
