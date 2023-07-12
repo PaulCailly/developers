@@ -10,8 +10,8 @@
 
 ```ts
 const authInstance = new Auth({
-	host: 'https://auth.deezer.com',
-	customFetch,
+  host: "https://auth.deezer.com",
+  customFetch,
 });
 ```
 
@@ -19,13 +19,13 @@ const authInstance = new Auth({
 
 The Auth class can be configured with the following parameters:
 
-| param name             |                                       |            | description                                                                                                                                  |
-| ---------------------- | :-----------------------------------: | :--------: | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| host                   |               `string`                |  required  | The host of the authentication service                                                                                                       |
-| customFetch            |       `typeof globalThis.fetch`       | _optional_ | A custom fetch method if you need to decorate requests (e.g. with metrics). <br> Defaults to `fetch`                                         |
-| tokenOutputType        | `QUERY_PARAMS_TYPE`<br> (`c` or `p`)  | _optional_ | Type of output for the JWT <br> Defaults to `QUERY_PARAMS_TYPE.PAYLOAD`                                                                      |
-| refreshTokenOutputType | `QUERY_PARAMS_TYPE` <br> (`c` or `p`) | _optional_ | Type of output for the Refresh Token <br> Defaults to `QUERY_PARAMS_TYPE.COOKIE`                                                             |
-| requestDelay           |               `number`                | _optional_ | Delay (in seconds) to invalidate a token before its real expiration date to ensure its validity throughout the request.<br> Defaults to `15` |
+| param name             |                                        |            | description                                                                                                                                   |
+| ---------------------- | :------------------------------------: | :--------: | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| host                   |                `string`                |  required  | The host of the authentication service                                                                                                        |
+| customFetch            |       `typeof globalThis.fetch`        | _optional_ | A custom fetch method if you need to decorate requests (e.g. with metrics). <br/> Defaults to `fetch`                                         |
+| tokenOutputType        | `QUERY_PARAMS_TYPE`<br/> (`c` or `p`)  | _optional_ | Type of output for the JWT <br/> Defaults to `QUERY_PARAMS_TYPE.PAYLOAD`                                                                      |
+| refreshTokenOutputType | `QUERY_PARAMS_TYPE` <br/> (`c` or `p`) | _optional_ | Type of output for the Refresh Token <br/> Defaults to `QUERY_PARAMS_TYPE.COOKIE`                                                             |
+| requestDelay           |                `number`                | _optional_ | Delay (in seconds) to invalidate a token before its real expiration date to ensure its validity throughout the request.<br/> Defaults to `15` |
 
 **Note:** We **strongly** recommend to use the default configuration which should be adapted to most usage.
 
@@ -35,11 +35,11 @@ If you need to override the default behavior, be sure to know what you are doing
 
 Once you have instantiated an Auth class, you can use the following methods:
 
-| method name            | signature                                   | description                                                                                                            |
-| ---------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| getToken               | <code>() => Promise\<string \| null></code> | Returns a JWT fresh from auth service or from cache if still valid.<br>Returns `null` if `tokenOutputType` is `COOKIE` |
-| invalidateCurrentToken | <code>() => void</code>                     | Forces the invalidation of tokens cached into the Auth class                                                           |
-| logout                 | <code>() => Promise\<void></code>           | Invalidates JWT and refresh token set in cache or cookie                                                               |
+| method name            | signature                                   | description                                                                                                             |
+| ---------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| getToken               | <code>() => Promise\<string \| null></code> | Returns a JWT fresh from auth service or from cache if still valid.<br/>Returns `null` if `tokenOutputType` is `COOKIE` |
+| invalidateCurrentToken | <code>() => void</code>                     | Forces the invalidation of tokens cached into the Auth class                                                            |
+| logout                 | <code>() => Promise\<void></code>           | Invalidates JWT and refresh token set in cache or cookie                                                                |
 
 ## Login as Partner
 
@@ -61,17 +61,17 @@ You might be experiencing issues with the token renewal process with some browse
 
 ```ts
 import Auth, {
-	Storage,
-	LocalStorageRefreshTokenStorage,
-	QUERY_PARAMS_TYPE,
-} from '@deezer/sdk-auth';
+  Storage,
+  LocalStorageRefreshTokenStorage,
+  QUERY_PARAMS_TYPE,
+} from "@deezer/sdk-auth";
 
 const storage = new Storage();
 const authInstance = new Auth({
-	host: 'auth.deezer.com',
-	refreshTokenOutputType: QUERY_PARAMS_TYPE.PAYLOAD,
-	refreshTokenCache: storage.isStorageSupported
-		? new LocalStorageRefreshTokenStorage(storage)
-		: undefined,
+  host: "auth.deezer.com",
+  refreshTokenOutputType: QUERY_PARAMS_TYPE.PAYLOAD,
+  refreshTokenCache: storage.isStorageSupported
+    ? new LocalStorageRefreshTokenStorage(storage)
+    : undefined,
 });
 ```
