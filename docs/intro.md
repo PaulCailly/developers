@@ -1,47 +1,18 @@
----
-sidebar_position: 1
----
+# Welcome to the Deezer SDK Documentation
 
-# Tutorial Intro
+Deezer's Software Development Kit (SDK) is a comprehensive set of tools designed to help you create a media app integrated with the vast Deezer Music catalogue. Available on iOS, Android, and Web platforms, our SDK offers you a simplified way to authenticate users, play music from our extensive library, and handle offline content.
 
-Let's discover **Docusaurus in less than 5 minutes**.
+Our SDK offers two primary utilities:
 
-## Getting Started
+1. **Authentication Service:** This service identifies Deezer users and provides tokens to access our Pipe backend.
+2. **Player:** This feature-rich player allows you to handle a variety of playback operations such as setting up a queue, managing track additions/removals, and controlling playback states.
 
-Get started by **creating a new site**.
+The SDK also interfaces with our Partner API, enabling partners to create Deezer accounts, link them with subscriptions, and access the breadth of our music content.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+Please note that while our player will play any list of IDs given to it, partners are responsible for verifying if the user has the rights to play the track. If a track is not available for a user, an error will be raised.
 
-### What you'll need
+As for offline functionality, the SDK currently allows partners to download songs and receive the status for a specific song. While the SDK doesn't manage synchronization on its own, the V2 is in progress and should add features such as synchronization, downloading collections (playlist/album), and handling offline content updates.
 
-- [Node.js](https://nodejs.org/en/download/) version 16.14 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+Please be aware that the SDK does not provide metadata of tracks. Partners should request this information from Pipe to display any track information such as cover, title, artist name, etc.
 
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
-```
-
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
-
-The command also installs all necessary dependencies you need to run Docusaurus.
-
-## Start your site
-
-Run the development server:
-
-```bash
-cd my-website
-npm run start
-```
-
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+To get started with the SDK, create a new application on the Deezer Developers platform, and request access on JFrog where the SDK is stored. Happy coding!
