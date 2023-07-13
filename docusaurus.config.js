@@ -59,7 +59,7 @@ const config = {
       navbar: {
         title: "Developers",
         logo: {
-          alt: "My Site Logo",
+          alt: "Deezer Developers Logo",
           src: "img/logo.svg",
           width: 30,
           height: 30,
@@ -67,9 +67,9 @@ const config = {
         items: [
           {
             type: "docSidebar",
-            sidebarId: "tutorialSidebar",
+            sidebarId: "sidebar",
             position: "left",
-            label: "Docs",
+            label: "Documentation",
           },
         ],
       },
@@ -80,7 +80,7 @@ const config = {
             title: "Docs",
             items: [
               {
-                label: "Tutorial",
+                label: "Demo app",
                 to: "/docs/introduction",
               },
               {
@@ -93,7 +93,7 @@ const config = {
             title: "Resources",
             items: [
               {
-                label: "Preview GitHub",
+                label: "GitHub",
                 href: "https://github.com/deezer/sdk-sample-app-web",
               },
               {
@@ -103,7 +103,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Deezer Developers. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Deezer. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
