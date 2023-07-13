@@ -16,10 +16,6 @@ const stacks: Stack[] = [
     Icon: require("@site/static/img/react.svg").default,
   },
   {
-    title: "Next.js",
-    Icon: require("@site/static/img/nextjs.svg").default,
-  },
-  {
     title: "Angular",
     Icon: require("@site/static/img/angular.svg").default,
   },
